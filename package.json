@@ -1,0 +1,34 @@
+{
+  "name": "grovx",
+  "private": true,
+  "version": "1.0.0",
+  "description": "GrovX: Quantum Search Lab, an application-driven implementation and evaluation of Grover's search algorithm",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:docs": "vite build --outDir docs --emptyOutDir",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.1"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kavin-JS/GrovX.git"
+  },
+  "homepage": "https://Kavin-JS.github.io/GrovX/",
+  "engines": {
+    "node": ">=18"
+  }
+}
