@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } from 'recharts';
-import { PageHead } from '../components/ui.jsx';
+import { PageHead, Stat } from '../components/ui.jsx';
 import { useThemeColors } from '../hooks/useThemeColors.js';
+import { useIsNarrow } from '../hooks/useMediaQuery.js';
 import { estimateResources, scanResources } from '../quantum/resources.js';
 import { fmt, dur } from '../utils/format.js';
 
 export default function Resources() {
   const c = useThemeColors();
+  const narrow = useIsNarrow();
   const [n, setN] = useState(14);
   const [p2, setP2] = useState(0.001);
   const [oracle, setOracle] = useState(0);
@@ -77,30 +79,24 @@ export default function Resources() {
             <input id="rg" type="number" min="1" value={gateNs} onChange={(e) => setGateNs(Math.max(1, +e.target.value || 1))} />
           </div>
         </div>
-        <div className="scroll">
-          <table>
-            <tbody>
-              {items.map(([a, b]) => (
-                <tr key={a}><td>{a}</td><td><b>{b}</b></td></tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="stats">
+          {items.map(([a, b]) => <Stat key={a} label={a} value={b} />)}
         </div>
         {verdict}
       </div>
 
       <div className="card" style={{ marginTop: 32 }}>
-        <h3>Where is the crossover?</h3>
+        <h3>Where is the crossover? (run time in seconds, log scale)</h3>
         <div className="chart" role="img" aria-label="Quantum and classical run time against qubit count, log scale">
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={narrow ? 260 : 300}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 20, left: 0 }}>
               <CartesianGrid stroke={c.line} />
               <XAxis dataKey="n" {...axis} label={{ value: 'qubits n', position: 'insideBottom', offset: -10, fill: c.muted, fontSize: 12 }} />
-              <YAxis scale="log" domain={['auto', 'auto']} allowDataOverflow {...axis} width={64} tickFormatter={(v) => v.toExponential(0) + ' s'} />
+              <YAxis scale="log" domain={['auto', 'auto']} allowDataOverflow {...axis} width={narrow ? 44 : 52} tickFormatter={(v) => v.toExponential(0)} />
               <Tooltip contentStyle={{ background: c.surface, border: `1px solid ${c.line}`, color: c.ink }} formatter={(v) => dur(v)} labelFormatter={(l) => 'n = ' + l} />
-              <Legend />
+              <Legend verticalAlign="top" height={narrow ? 48 : 30} />
               <Line dataKey="classical" name="classical (one core)" stroke={c.muted} strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line dataKey="quantum" name="quantum circuit (ideal, no error correction overhead)" stroke={c.accent} strokeWidth={2.5} dot={false} isAnimationActive={false} />
+              <Line dataKey="quantum" name="quantum circuit (ideal)" stroke={c.accent} strokeWidth={2.5} dot={false} isAnimationActive={false} />
               <ReferenceLine x={n} stroke={c.hit} strokeDasharray="4 4" />
             </LineChart>
           </ResponsiveContainer>

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts';
 import { useThemeColors } from '../hooks/useThemeColors.js';
+import { useIsNarrow } from '../hooks/useMediaQuery.js';
 
 /**
  * Signed amplitude of every basis state. For large N the states are grouped into
@@ -8,6 +9,7 @@ import { useThemeColors } from '../hooks/useThemeColors.js';
  */
 export default function AmplitudeChart({ amps, targets, height = 260 }) {
   const c = useThemeColors();
+  const narrow = useIsNarrow();
   const data = useMemo(() => {
     const N = amps.length;
     const bins = Math.min(N, 128);
@@ -32,7 +34,7 @@ export default function AmplitudeChart({ amps, targets, height = 260 }) {
         <BarChart data={data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }} barCategoryGap={data.length > 64 ? 0 : '12%'}>
           <CartesianGrid stroke={c.line} vertical={false} />
           <XAxis dataKey="label" hide />
-          <YAxis tick={{ fill: c.muted, fontSize: 12 }} stroke={c.muted} width={52} tickFormatter={(v) => v.toFixed(2)} domain={['auto', 'auto']} />
+          <YAxis tick={{ fill: c.muted, fontSize: 12 }} stroke={c.muted} width={narrow ? 40 : 52} tickFormatter={(v) => v.toFixed(2)} domain={['auto', 'auto']} />
           <Tooltip
             formatter={(v) => [Number(v).toFixed(4), 'amplitude']}
             labelFormatter={(l) => 'state ' + l}

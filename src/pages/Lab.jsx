@@ -7,6 +7,7 @@ import { PageHead, Stat } from '../components/ui.jsx';
 import AmplitudeChart from '../components/AmplitudeChart.jsx';
 import CircuitDiagram from '../components/CircuitDiagram.jsx';
 import { useThemeColors } from '../hooks/useThemeColors.js';
+import { useIsNarrow } from '../hooks/useMediaQuery.js';
 import { runGrover, optimalIterations, theoreticalProbability, targetsFor } from '../quantum/grover.js';
 import { sampleAmplitudes } from '../quantum/simulator.js';
 import { timedLinearSearch } from '../classical/linearSearch.js';
@@ -29,6 +30,7 @@ const SCENARIOS = {
 
 export default function Lab() {
   const c = useThemeColors();
+  const narrow = useIsNarrow();
   const [scenario, setScenario] = useState('code');
   const [n, setN] = useState(6);
   const [M, setM] = useState(1);
@@ -168,7 +170,8 @@ export default function Lab() {
             <p className="caption">
               <span className="legend-dot" style={{ background: 'var(--hit)' }} />secret item{result.M > 1 ? 's' : ''}
               &nbsp;&nbsp;<span className="legend-dot" style={{ background: 'var(--bar)' }} />all others.
-              {result.N > 128 && ' States are grouped into 128 bins; hover for the range. '}
+              {' '}
+              {result.N > 128 && 'States are grouped into 128 bins; hover for the range. '}
               The vertical axis rescales at every iteration. Probability of finding the secret now:{' '}
               <b>{pct(result.grover.history[view].p)}</b>.
             </p>
@@ -178,13 +181,13 @@ export default function Lab() {
             <div className="card">
               <h3>Success probability vs iterations</h3>
               <div className="chart" role="img" aria-label="Success probability against Grover iterations, simulated and theoretical">
-                <ResponsiveContainer width="100%" height={260}>
+                <ResponsiveContainer width="100%" height={narrow ? 230 : 260}>
                   <LineChart data={curve} margin={{ top: 8, right: 12, bottom: 20, left: 0 }}>
                     <CartesianGrid stroke={c.line} />
                     <XAxis dataKey="k" tick={{ fill: c.muted, fontSize: 12 }} stroke={c.muted} label={{ value: 'Grover iterations', position: 'insideBottom', offset: -10, fill: c.muted, fontSize: 12 }} />
                     <YAxis domain={[0, 1]} tick={{ fill: c.muted, fontSize: 12 }} stroke={c.muted} width={40} />
                     <Tooltip contentStyle={tip} formatter={(v) => Number(v).toFixed(4)} />
-                    <Legend />
+                    <Legend verticalAlign="top" height={narrow ? 48 : 30} />
                     <Line dataKey="theory" name="theory sin²((2k+1)θ)" stroke={c.muted} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
                     <Line dataKey="simulated" name="simulated" stroke={c.hit} strokeWidth={2} dot={{ r: 3, fill: c.hit }} isAnimationActive={false} />
                     <ReferenceDot x={view} y={result.grover.history[view].p} r={7} fill={c.accent} stroke="none" />
@@ -197,7 +200,7 @@ export default function Lab() {
             <div className="card">
               <h3>{shots} measurements at iteration {view}</h3>
               <div className="chart" role="img" aria-label="Histogram of the most frequent measurement outcomes">
-                <ResponsiveContainer width="100%" height={260}>
+                <ResponsiveContainer width="100%" height={narrow ? 230 : 260}>
                   <BarChart data={measured.top.map(([i, cnt]) => ({ label: S.label(i, result.n), cnt, hit: result.targets.includes(i) }))}
                     margin={{ top: 8, right: 12, bottom: 30, left: 0 }}>
                     <CartesianGrid stroke={c.line} vertical={false} />

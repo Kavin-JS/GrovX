@@ -17,7 +17,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.62 var(--serif); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.62 var(--serif); overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+img, svg { max-width: 100%; }
 main { counter-reset: sec fig; }
 a { color: var(--accent); }
 p { margin: 0 0 14px; max-width: 68ch; }
@@ -80,7 +81,7 @@ input[type=number], select { width: 100%; padding: 7px 9px; border: 1px solid #b
 .stats { margin-top: 6px; }
 .stat { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 7px 0; border-bottom: 1px solid var(--line); font: 400 0.88rem var(--sans); }
 .stat span { color: var(--muted); }
-.stat b { font: 500 0.88rem var(--mono); text-align: right; }
+.stat b { font: 500 0.88rem var(--mono); text-align: right; overflow-wrap: anywhere; }
 .hit { color: var(--hit); } .good { color: var(--good); } .bad { color: var(--bad); }
 
 /* ---- tables ---- */
@@ -98,7 +99,7 @@ table.text td:first-child { font-weight: 500; }
 .callout.good { border-left-color: var(--good); }
 .callout.bad { border-left-color: var(--bad); }
 .callout p:last-child { margin-bottom: 0; }
-.formula { display: block; border-left: 3px solid var(--line); padding: 6px 16px; margin: 10px 0; font: 400 0.98rem var(--mono); }
+.formula { display: block; overflow-x: auto; max-width: 100%; border-left: 3px solid var(--line); padding: 6px 16px; margin: 10px 0; font: 400 0.98rem var(--mono); }
 .steps { counter-reset: s; list-style: none; padding: 0; margin: 12px 0; }
 .steps li { counter-increment: s; padding-left: 46px; position: relative; margin-bottom: 14px; max-width: 68ch; }
 .steps li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 0; top: 0.2em; font: 500 0.9rem var(--mono); color: var(--accent); }
@@ -118,3 +119,39 @@ ul.tight li, ol.tight li { margin-bottom: 8px; }
 svg text { font-family: var(--sans); }
 .recharts-wrapper { font-family: var(--sans); }
 .recharts-legend-item-text { color: var(--ink) !important; font-size: 12px; }
+
+/* ---- tablets and phones ---- */
+@media (max-width: 860px) {
+  .container { padding: 36px 20px 64px; }
+  .site-header .inner { padding: 12px 20px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .container { padding: 28px 16px 56px; }
+  .site-header .inner { padding: 10px 16px 8px; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .nav { gap: 0 18px; }
+  .nav a { padding: 9px 0; font-size: 0.95rem; }
+  .block { margin-top: 44px; }
+  .page-head { margin-bottom: 28px; }
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.3rem; }
+  .lede, .standfirst { font-size: 1.05rem; }
+  .two-col, .grid-2 { gap: 20px; }
+  .controls { grid-template-columns: 1fr; padding: 14px; gap: 14px; }
+  label { font-size: 0.9rem; }
+  input[type=number], select { font-size: 16px; padding: 10px; }
+  input[type=range] { height: 32px; }
+  .actions { gap: 8px; }
+  .btn { padding: 11px 18px; min-height: 44px; }
+  .actions .btn { flex: 1 1 auto; text-align: center; }
+  .stat { flex-wrap: wrap; row-gap: 2px; }
+  .formula { font-size: 0.82rem; padding: 6px 12px; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 7px 8px; }
+  .steps li { padding-left: 38px; }
+  .callout { padding-left: 12px; }
+  .caption { font-size: 0.82rem; }
+  ul.tight, ol.tight { padding-left: 18px; }
+  .site-footer .inner { padding: 18px 16px; }
+  h2 + .grid-2 > .card:first-child { border-top: 0; padding-top: 0; }
+}

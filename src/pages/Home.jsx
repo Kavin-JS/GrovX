@@ -100,7 +100,7 @@ export default function Home() {
         <div className="scroll">
           <table>
             <thead>
-              <tr><th>Qubits n</th><th>Items N = 2ⁿ</th><th>Classical queries (average)</th><th>Grover iterations</th><th>Reduction</th></tr>
+              <tr><th>n</th><th>N = 2ⁿ</th><th>Classical (avg)</th><th>Grover</th><th>Reduction</th></tr>
             </thead>
             <tbody>
               {[10, 20, 30, 40].map((n) => {

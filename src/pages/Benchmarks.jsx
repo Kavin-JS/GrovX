@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { PageHead, Stat } from '../components/ui.jsx';
 import { useThemeColors } from '../hooks/useThemeColors.js';
+import { useIsNarrow } from '../hooks/useMediaQuery.js';
 import { runBenchmark, rowsToCsv } from '../experiments/benchmark.js';
 import { optimalIterations } from '../quantum/grover.js';
 import { fmt, pct } from '../utils/format.js';
@@ -9,11 +10,12 @@ import { fmt, pct } from '../utils/format.js';
 let cache = null; // keep results when navigating away and back
 
 function ChartBox({ title, caption, children }) {
+  const narrow = useIsNarrow();
   return (
     <div className="card">
       <h3>{title}</h3>
       <div className="chart" role="img" aria-label={title}>
-        <ResponsiveContainer width="100%" height={280}>{children}</ResponsiveContainer>
+        <ResponsiveContainer width="100%" height={narrow ? 240 : 280}>{children}</ResponsiveContainer>
       </div>
       <p className="caption">{caption}</p>
     </div>
@@ -22,6 +24,7 @@ function ChartBox({ title, caption, children }) {
 
 export default function Benchmarks() {
   const c = useThemeColors();
+  const narrow = useIsNarrow();
   const [maxN, setMaxN] = useState(cache?.maxN ?? 12);
   const [rows, setRows] = useState(cache?.rows ?? null);
   const [progress, setProgress] = useState(null);
@@ -104,9 +107,9 @@ export default function Benchmarks() {
               <LineChart data={scaling} margin={{ top: 8, right: 12, bottom: 20, left: 0 }}>
                 <CartesianGrid stroke={c.line} />
                 <XAxis dataKey="n" {...axis} label={{ value: 'qubits n', position: 'insideBottom', offset: -10, fill: c.muted, fontSize: 12 }} />
-                <YAxis scale="log" domain={['auto', 'auto']} allowDataOverflow {...axis} width={56} tickFormatter={(v) => v.toExponential(0)} />
+                <YAxis scale="log" domain={['auto', 'auto']} allowDataOverflow {...axis} width={narrow ? 44 : 56} tickFormatter={(v) => v.toExponential(0)} />
                 <Tooltip contentStyle={tip} formatter={(v) => fmt(v)} />
-                <Legend />
+                <Legend verticalAlign="top" height={narrow ? 48 : 30} />
                 <Line dataKey="classical" name="classical (N+1)/2" stroke={c.muted} strokeWidth={2} dot={false} isAnimationActive={false} />
                 <Line dataKey="grover" name="Grover ≈ (π/4)√N" stroke={c.accent} strokeWidth={2.5} dot={false} isAnimationActive={false} />
                 <Line dataKey="measured" name="classical measured" stroke="none" dot={{ r: 4, fill: c.hit }} isAnimationActive={false} />
@@ -118,9 +121,9 @@ export default function Benchmarks() {
               <LineChart data={rows} margin={{ top: 8, right: 12, bottom: 20, left: 0 }}>
                 <CartesianGrid stroke={c.line} />
                 <XAxis dataKey="n" {...axis} label={{ value: 'qubits n', position: 'insideBottom', offset: -10, fill: c.muted, fontSize: 12 }} />
-                <YAxis domain={[0.8, 1.01]} {...axis} width={44} tickFormatter={(v) => (v * 100).toFixed(0) + '%'} />
+                <YAxis domain={[0.8, 1]} ticks={[0.8, 0.85, 0.9, 0.95, 1]} {...axis} width={narrow ? 40 : 44} tickFormatter={(v) => (v * 100).toFixed(0) + '%'} />
                 <Tooltip contentStyle={tip} formatter={(v) => pct(v, 2)} />
-                <Legend />
+                <Legend verticalAlign="top" height={narrow ? 48 : 30} />
                 <Line dataKey="pTheory" name="theory" stroke={c.muted} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
                 <Line dataKey="groverP" name="simulated" stroke={c.hit} strokeWidth={2} dot={{ r: 3, fill: c.hit }} isAnimationActive={false} />
               </LineChart>
@@ -128,14 +131,14 @@ export default function Benchmarks() {
           </div>
 
           <div style={{ marginTop: 32 }}>
-            <ChartBox title="Wall-clock time in this browser (log scale)"
+            <ChartBox title="Wall-clock time in this browser, in ms (log scale)"
               caption="Classical search runs on the CPU. The 'simulated' line is the CPU time needed to imitate Grover's circuit: it grows like 2ⁿ·n·√N, far faster than the classical search. A simulator can never show a speedup; only real quantum hardware can, and only for large N.">
               <LineChart data={timeData} margin={{ top: 8, right: 12, bottom: 20, left: 0 }}>
                 <CartesianGrid stroke={c.line} />
                 <XAxis dataKey="n" {...axis} label={{ value: 'qubits n', position: 'insideBottom', offset: -10, fill: c.muted, fontSize: 12 }} />
-                <YAxis scale="log" domain={['auto', 'auto']} allowDataOverflow {...axis} width={60} tickFormatter={(v) => v.toExponential(0) + ' ms'} />
+                <YAxis scale="log" domain={['auto', 'auto']} allowDataOverflow {...axis} width={narrow ? 44 : 52} tickFormatter={(v) => v.toExponential(0)} />
                 <Tooltip contentStyle={tip} formatter={(v) => v.toExponential(2) + ' ms'} />
-                <Legend />
+                <Legend verticalAlign="top" height={narrow ? 48 : 30} />
                 <Line dataKey="classical" name="classical search" stroke={c.muted} strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
                 <Line dataKey="simulated" name="Grover simulation" stroke={c.accent} strokeWidth={2.5} dot={{ r: 3 }} isAnimationActive={false} />
               </LineChart>

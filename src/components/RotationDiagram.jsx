@@ -18,7 +18,7 @@ export default function RotationDiagram({ N, M = 1, k }) {
   const line = { stroke: 'var(--line)', strokeWidth: 1.5 };
 
   return (
-    <svg viewBox="0 0 400 380" width="100%" style={{ maxWidth: 440, display: 'block' }} role="img"
+    <svg viewBox="0 0 440 380" width="100%" style={{ maxWidth: 480, display: 'block' }} role="img"
       aria-label={`State vector at angle ${deg(ang)} degrees; success probability ${(P * 100).toFixed(1)} percent`}>
       <circle cx={cx} cy={cy} r={R} style={{ fill: 'none', ...line }} />
       <line x1={cx - R - 10} x2={cx + R + 10} y1={cy} y2={cy} style={{ stroke: 'var(--muted)', strokeWidth: 1 }} />

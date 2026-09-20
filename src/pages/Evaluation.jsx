@@ -51,7 +51,7 @@ export default function Evaluation() {
         </p>
         <div className="card scroll">
           <table>
-            <thead><tr><th>Key size</th><th>Classical average guesses</th><th>Grover iterations</th><th>Effective security</th></tr></thead>
+            <thead><tr><th>Key</th><th>Classical (avg)</th><th>Grover</th><th>Security</th></tr></thead>
             <tbody>
               {keys.map((k) => (
                 <tr key={k}>

@@ -1,16 +1,16 @@
 /** Schematic of Grover's circuit: H layer, then (Oracle + Diffusion) repeated k times, then measurement. */
 export default function CircuitDiagram({ n, k }) {
   const rows = n <= 5 ? Array.from({ length: n }, (_, i) => i) : [0, 1, 2, '…', n - 1];
-  const gap = 44, top = 46;
+  const gap = 44, top = 62;
   const H = top + rows.length * gap + 20;
   const yOf = (i) => top + i * gap;
   const y0 = yOf(0) - 18, y1 = yOf(rows.length - 1) + 18;
-  const box = { fill: 'var(--surface)', stroke: 'var(--ink)', strokeWidth: 1.5 };
+  const box = { fill: 'var(--bg)', stroke: 'var(--ink)', strokeWidth: 1.5 };
   const txt = { fill: 'var(--ink)', fontSize: 13, textAnchor: 'middle' };
 
   return (
     <div className="scroll chart">
-      <svg viewBox={`0 0 700 ${H}`} width="100%" style={{ minWidth: 560, display: 'block' }} role="img"
+      <svg viewBox={`0 0 700 ${H}`} width="100%" style={{ minWidth: 500, maxWidth: 780, display: 'block' }} role="img"
         aria-label={`Grover circuit on ${n} qubits: Hadamards, then oracle and diffusion repeated ${k} times, then measurement`}>
         {rows.map((r, i) => (
           <g key={i}>
