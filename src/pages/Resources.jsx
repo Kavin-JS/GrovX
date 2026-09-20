@@ -106,11 +106,11 @@ export default function Resources() {
           </ResponsiveContainer>
         </div>
         <p className="caption">
-          {scan.firstIdealWin
-            ? <>With these assumptions the quantum circuit is faster from n = <b>{scan.firstIdealWin}</b> upward if it ran without errors. </>
-            : <>With these assumptions the quantum circuit never beats one classical core up to n = 60. </>}
-          {scan.firstUsableWin
-            ? <>With noise included it also returns the right answer at least half the time from n = <b>{scan.firstUsableWin}</b>.</>
+          {scan.sustainedWin
+            ? <>If it ran without errors, the quantum circuit would be faster than one classical core from n = <b>{scan.sustainedWin}</b> upward. </>
+            : <>Even without errors, the quantum circuit does not stay ahead of one classical core up to n = 60. </>}
+          {scan.usableMin !== null
+            ? <>With noise included it is both faster and correct at least half the time only for n = <b>{scan.usableMin}</b> to <b>{scan.usableMax}</b>; beyond that the circuit is too long to run reliably.</>
             : <>Once noise is included there is no size at which it is both faster and reliable. Try lowering the error rate.</>}
         </p>
       </div>

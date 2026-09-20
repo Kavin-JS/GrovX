@@ -4,7 +4,7 @@ import {
   runGrover, optimalIterations, theoreticalProbability, targetsFor, initOps,
 } from '../src/quantum/grover.js';
 import { linearSearch } from '../src/classical/linearSearch.js';
-import { estimateResources } from '../src/quantum/resources.js';
+import { estimateResources, scanResources } from '../src/quantum/resources.js';
 
 describe('simulator', () => {
   it('Hadamard on every qubit gives a uniform superposition', () => {
@@ -91,5 +91,11 @@ describe('classical baseline and resources', () => {
     const a = estimateResources({ n: 8 }), b = estimateResources({ n: 12 });
     expect(b.twoQ).toBeGreaterThan(a.twoQ);
     expect(b.fidelity).toBeLessThan(a.fidelity);
+  });
+
+  it('crossover scan reports a sustained win, not an accidental one at tiny n', () => {
+    const scan = scanResources({ p2: 1e-3, oracleToffoli: 0, checkNs: 1000 }, 60);
+    expect(scan.sustainedWin).toBeGreaterThan(2);
+    for (const r of scan.rows.filter((x) => x.n >= scan.sustainedWin)) expect(r.idealWin).toBe(true);
   });
 });

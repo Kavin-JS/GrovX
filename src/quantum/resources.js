@@ -48,7 +48,13 @@ export function estimateResources({
   };
 }
 
-/** Scan n = 2..nMax to find where (if anywhere) the quantum circuit wins. */
+/**
+ * Scan n = 2..nMax to find where (if anywhere) the quantum circuit wins.
+ *
+ * "Sustained win" = the smallest n from which the ideal quantum run time stays below the
+ * classical run time for every larger n (tiny n can win by accident, so a first win is not enough).
+ * "Usable window" = sizes at or above that point where the noisy circuit still succeeds at least half the time.
+ */
 export function scanResources(params, nMax = 60) {
   const rows = [];
   for (let n = 2; n <= nMax; n++) {
@@ -59,12 +65,15 @@ export function scanResources(params, nMax = 60) {
       classical: r.classicalSeconds,
       pNoisy: r.pNoisy,
       idealWin: r.quantumSeconds < r.classicalSeconds,
-      usableWin: r.quantumSeconds < r.classicalSeconds && r.pNoisy >= 0.5,
     });
   }
+  let sustainedWin = null;
+  for (let i = rows.length - 1; i >= 0 && rows[i].idealWin; i--) sustainedWin = rows[i].n;
+  const usable = rows.filter((r) => sustainedWin !== null && r.n >= sustainedWin && r.pNoisy >= 0.5);
   return {
     rows,
-    firstIdealWin: rows.find((r) => r.idealWin)?.n ?? null,
-    firstUsableWin: rows.find((r) => r.usableWin)?.n ?? null,
+    sustainedWin,
+    usableMin: usable.length ? usable[0].n : null,
+    usableMax: usable.length ? usable[usable.length - 1].n : null,
   };
 }
